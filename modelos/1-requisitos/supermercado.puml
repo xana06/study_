@@ -1,0 +1,94 @@
+@startuml modelodedominio
+
+!include dss-dominio.iuml
+
+class "Artigo de Peso" as ArtigoPeso
+
+class "Modo de Registo" as ModoRegisto
+class "Self-Service" as SelfService
+class "Registo Assistido" as RegistoAssistido
+class "Leitura com Telemóvel" as Leitura
+
+class "Posto de Tapete" as PostoTapete
+class "Posto Polivalente" as PostoPolivalente
+
+class "Método de Pagamento" as MetodoPagamento
+class "Cartão Bancário" as Cartao
+class "Cartão de Refeição" as CartaoRefeicao
+class "Vale de Devolução" as ValeDevolucao
+
+class "Desconto Percentual" as Percentagem
+class "Desconto por Quantidade" as Quantidade
+class "Cupão Pessoal" as Cupao
+class "Desconto Cruzado" as Cruzado
+class "Acumulação no Cartão" as Acumulacao
+
+class "Cartão de Cliente" as CartaoCliente
+
+class "Devolução de Artigo" as DevolucaoArtigo
+
+class "Operador de Caixa" as OperadorCaixa
+class "Chefe de Caixas" as ChefeCaixas
+
+class "Linha do Talão" as LinhaTalao
+
+CartaoCliente "1" -- "*" Acumulacao : rastreia >
+CartaoCliente "1" -- "*" Cupao : armazena >
+
+Cliente "1" -- "0..1" CartaoCliente : possui >
+Cliente "1" -- "1" Histórico : possui >
+Cliente "1" -right- "1..*" Compra : efetua >
+
+Compra "*" -- "0..1" CartaoCliente : associada a >
+Compra "*" -- "1" ModoRegisto : registada em modo >
+Compra "1" -down- "1..*" LinhaTalao : constituída por >
+Compra "1" -- "1..*" MetodoPagamento : paga através de >
+
+LinhaTalao "*" -- "1" Artigo : refere >
+Artigo "1" -- "1..*" Preço : tem >
+ArtigoPeso -up- Artigo : é um >
+LinhaTalao "*" -- "*" Campanha : elegível a >
+DevolucaoArtigo "1" -- "0..1" ValeDevolucao : gera >
+
+Cartao -up- MetodoPagamento : é um >
+ValeDevolucao -up- MetodoPagamento : é um >
+CartaoRefeicao -up- MetodoPagamento : é um >
+Dinheiro -up- MetodoPagamento : é um >
+
+SelfService -up- ModoRegisto : é um >
+Leitura -up- ModoRegisto : é um >
+RegistoAssistido -up- ModoRegisto : é um >
+
+Loja "1" -- "1..*" Posto : possui >
+PostoTapete -up- Posto : é um >
+PostoPolivalente -up- Posto : é um >
+
+RegistoAssistido "*" -- "1" PostoTapete : realizado em >
+SelfService "*" -- "1" PostoPolivalente : executado em >
+Leitura "*" -- "1" PostoPolivalente : validado/pago em >
+
+Compra "1" -- "0..1" Validação : sujeita a >
+
+Validação "*" -- "1" Histórico : é registada em >
+Validação "*" -- "1" Relatório : é registada em >
+
+note top of Validação
+    Apenas aplicável a compras registadas com telemóvel
+end note
+
+Compra "1" -- "0..1" Anulação : sujeita a >
+DevolucaoArtigo "*" -down- "1" Compra : refere-se a >
+
+Percentagem -up- Campanha : é uma >
+Quantidade -up- Campanha : é uma >
+Cupao -up- Campanha : é uma >
+Cruzado -up- Campanha : é uma >
+Acumulacao -up- Campanha : é uma >
+
+RegistoAssistido "*" -down- "1" OperadorCaixa : efetuado por >
+ChefeCaixas -up- Funcionário : é um >
+OperadorCaixa -up- Funcionário : é um >
+
+Funcionário "1" -- "*" Validação : efetua >
+
+@enduml

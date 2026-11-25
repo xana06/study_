@@ -1,0 +1,26 @@
+@startuml registarArtigo
+title Registar artigo (compra com telemóvel)
+
+|Cliente|
+start
+:Iniciar a compra ao entrar na loja;
+
+|Sistema|
+:Abrir compra associada ao cartão de cliente;
+
+|Cliente|
+repeat
+  :Ler a etiqueta do artigo tirado da prateleira;
+  |Sistema|
+  :Identificar o artigo e obter o seu preço pela etiqueta;
+  :Adicionar o artigo à compra, com o preço e o instante de registo;
+  :Atualizar o total provisório;
+  |Cliente|
+repeat while (mais artigos?) is (sim) not (não)
+
+:Indicar que terminou a compra;
+
+|Sistema|
+:Guardar a compra como terminada, a aguardar pagamento num posto;
+stop
+@enduml

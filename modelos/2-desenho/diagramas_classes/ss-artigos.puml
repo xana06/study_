@@ -1,0 +1,32 @@
+@startuml ss_artigos
+!include estilo.iuml
+title Subsistema SubArtigos
+
+interface ISubArtigos <<interface>> {
+  +lerEtiqueta(codEtiqueta: CodigoEtiqueta): Artigo
+}
+
+class SubArtigosFacade {
+}
+
+class Etiqueta {
+  -codigo: CodigoEtiqueta
+  -preco: float
+  +getPreco(): float
+  +getArtigo(): Artigo
+}
+
+class Artigo {
+  -codigo: CodigoArtigo
+  -designacao: String
+  -preco: float
+  +getCodigo(): CodigoArtigo
+  +getDesignacao(): String
+  +getPreco(): float
+}
+
+ISubArtigos <|.. SubArtigosFacade
+SubArtigosFacade [codEtiqueta: CodigoEtiqueta] *--> "-etiquetas\n0..1" Etiqueta
+SubArtigosFacade [codArtigo: CodigoArtigo] *--> "-artigos\n0..1" Artigo
+Etiqueta --> "-artigo 1" Artigo
+@enduml

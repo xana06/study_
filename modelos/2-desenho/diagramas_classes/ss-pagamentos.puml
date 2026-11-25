@@ -1,0 +1,36 @@
+@startuml ss_pagamentos
+!include estilo.iuml
+title Subsistema SubPagamentos
+
+interface ISubPagamentos <<interface>> {
+  +pagarComSaldo(codCompra: CodigoCompra): float
+  +pagarComCartaoBancario(codCompra: CodigoCompra): float
+}
+
+class SubPagamentosFacade {
+}
+
+interface MeioPagamento <<interface>> {
+  +cobrar(c: Compra, valor: float): float
+}
+
+class MeioSaldo {
+  +cobrar(c: Compra, valor: float): float
+}
+
+class MeioCartaoBancario {
+  +cobrar(c: Compra, valor: float): float
+}
+
+interface "SubClientes::ISubClientes" as ISubClientes <<interface>>
+interface "SubCompras::ISubCompras" as ISubCompras <<interface>>
+class "SubCompras::Compra" as Compra
+
+ISubPagamentos <|.. SubPagamentosFacade
+SubPagamentosFacade [codMeio: String] *--> "-meios\n0..1" MeioPagamento
+SubPagamentosFacade --> "-compras 1" ISubCompras
+MeioPagamento <|.. MeioSaldo
+MeioPagamento <|.. MeioCartaoBancario
+MeioSaldo --> "-clientes 1" ISubClientes
+MeioPagamento ..> Compra
+@enduml

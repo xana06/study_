@@ -1,0 +1,7 @@
+@startuml usecaseAlias <.. usecaseAlias : label
+
+hide circle
+hide empty members
+skinparam classAttributeIconSize 0
+
+@enduml

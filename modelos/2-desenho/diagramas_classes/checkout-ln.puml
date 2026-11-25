@@ -1,0 +1,41 @@
+@startuml checkout_ln
+!include estilo.iuml
+title Fachada da Lógica de Negócio
+
+interface ICheckoutLN <<interface>> {
+  +abrirCompra(codCartao: CodigoCartao): CodigoCompra
+  +adicionarArtigo(codCompra: CodigoCompra, codEtiqueta: CodigoEtiqueta): float
+  +terminarCompra(codCompra: CodigoCompra): void
+  +iniciarPagamento(codCompra: CodigoCompra): boolean
+  +obterArtigosCompra(codCompra: CodigoCompra): List<LinhaCompra>
+  +registarResultadoVerificacao(codCompra: CodigoCompra, resultado: ResultadoVerificacao): void
+  +calcularTotalAPagar(codCompra: CodigoCompra): float
+  +pagarComSaldo(codCompra: CodigoCompra): float
+  +pagarComCartaoBancario(codCompra: CodigoCompra): float
+  +concluirCompra(codCompra: CodigoCompra): void
+}
+
+class CheckoutLNFacade {
+}
+
+interface ISubCompras <<interface>>
+interface ISubArtigos <<interface>>
+interface ISubCampanhas <<interface>>
+interface ISubPagamentos <<interface>>
+interface ISubClientes <<interface>>
+interface ISubVerificacoes <<interface>>
+
+ICheckoutLN <|.. CheckoutLNFacade
+CheckoutLNFacade *--> "-compras 1" ISubCompras
+CheckoutLNFacade *--> "-artigos 1" ISubArtigos
+CheckoutLNFacade *--> "-campanhas 1" ISubCampanhas
+CheckoutLNFacade *--> "-pagamentos 1" ISubPagamentos
+CheckoutLNFacade *--> "-clientes 1" ISubClientes
+CheckoutLNFacade *--> "-verificacoes 1" ISubVerificacoes
+
+note right of CheckoutLNFacade
+  Coordena os 6 subsistemas sem armazenar estado próprio.
+  Por exemplo: adicionarArtigo obtém Artigo via ISubArtigos.lerEtiqueta e delega em ISubCompras.adicionarArtigo.
+end note
+@enduml
+

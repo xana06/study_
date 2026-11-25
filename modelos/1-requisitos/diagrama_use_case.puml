@@ -1,0 +1,42 @@
+@startuml Diagrama de Use Case
+left to right direction
+
+actor Cliente
+actor "Operador de Caixa" as OpCaixa
+actor "Funcionário de Verificação" as Verificador
+actor "Chefe de Caixas" as Chefe
+actor "Responsável de Prevenção de Perdas" as Responsavel
+
+rectangle "Sistema de Checkout" {
+    usecase reg_self as "Registar compra em self-service\n--\nextension points\nremoção de artigo"
+    usecase "Registar compra com telemóvel" as reg_telemovel
+    usecase cobrar_posto as "Cobrar compra de telemóvel no posto\n--\nextension points\nvalidação"
+    usecase "Efetuar pagamento" as pagamento
+    usecase reg_assistida as "Registar compra em caixa assistida\n--\nextension points\nremoção de artigo"
+    usecase "Chamar próximo cliente" as chamar_proximo
+    usecase "Validar compra" as validar
+    usecase "Autorizar remoção de artigo" as auth
+    usecase "Alterar modo do posto" as alterar_modo
+    usecase "Configurar critérios de validação" as config_criterios
+}
+
+Cliente -- reg_self
+Cliente -- reg_telemovel
+Cliente -- cobrar_posto
+Cliente -- pagamento
+
+OpCaixa -- reg_assistida
+OpCaixa -- chamar_proximo
+
+validar -- Verificador
+auth -- Chefe
+alterar_modo -- Chefe
+config_criterios -- Responsavel
+
+cobrar_posto ..> pagamento : <<include>>
+
+validar ..> cobrar_posto : <<extend>>\n(validação)\n[compra sujeita a validação]
+auth ..> reg_assistida : <<extend>>\n(remoção de artigo)\n[valor acima do limite]
+auth ..> reg_self : <<extend>>\n(remoção de artigo)\n[valor acima do limite]
+
+@enduml

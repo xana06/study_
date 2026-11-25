@@ -1,0 +1,33 @@
+@startuml ss_verificacoes
+!include estilo.iuml
+title Subsistema SubVerificacoes
+
+interface ISubVerificacoes <<interface>> {
+  +decidirVerificacao(codCompra: CodigoCompra, nComprasPagas: int): boolean
+  +registarResultadoVerificacao(codCompra: CodigoCompra, resultado: ResultadoVerificacao): void
+}
+
+class SubVerificacoesFacade {
+  -probabilidade(nComprasPagas: int): float
+}
+
+class Verificacao {
+  -codCompra: CodigoCompra
+  +getResultado(): ResultadoVerificacao
+  +setResultado(resultado: ResultadoVerificacao): void
+}
+
+enum ResultadoVerificacao <<enumeration>> {
+  CONFORME
+  NAO_ADMISSIVEL
+}
+
+ISubVerificacoes <|.. SubVerificacoesFacade
+SubVerificacoesFacade [codCompra: CodigoCompra] *--> "-verificacoes\n0..1" Verificacao
+Verificacao --> "-resultado 0..1" ResultadoVerificacao
+
+note bottom of SubVerificacoesFacade
+  Decide uma única vez por compra:
+  probabilidade(n) = 1 / (n + 1).
+end note
+@enduml

@@ -1,0 +1,38 @@
+@startuml ss_campanhas
+!include estilo.iuml
+title Subsistema SubCampanhas
+
+interface ISubCampanhas <<interface>> {
+  +aplicarCampanhas(codCompra: CodigoCompra): float
+}
+
+class SubCampanhasFacade {
+}
+
+abstract class Campanha {
+  -codigo: String
+  -inicio: LocalDateTime
+  -fim: LocalDateTime
+  +emVigor(instante: LocalDateTime): boolean
+  +{abstract} desconto(c: Compra): float
+}
+
+class CampanhaLeve2Pague1 {
+  -codArtigo: CodigoArtigo
+  +desconto(c: Compra): float
+}
+
+interface "SubCompras::ISubCompras" as ISubCompras <<interface>>
+class "SubCompras::Compra" as Compra
+
+ISubCampanhas <|.. SubCampanhasFacade
+SubCampanhasFacade [codCampanha: String] *--> "-campanhas\n0..1" Campanha
+SubCampanhasFacade --> "-compras 1" ISubCompras
+Campanha <|-- CampanhaLeve2Pague1
+Campanha ..> Compra
+
+note bottom of CampanhaLeve2Pague1
+  Avalia c.getLinhas() filtrando pelo instante de registo
+  de cada linha (emVigor(linha.getInstante())).
+end note
+@enduml

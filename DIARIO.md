@@ -1,0 +1,51 @@
+# Diário do projecto
+
+Uma entrada por semana, escrita no final da semana, **no seu próprio commit**, na data a que diz respeito.
+Cada entrada tem três ou quatro linhas e regista o que se passou na cabeça do grupo: as dificuldades,
+as dúvidas que ficaram em aberto e o que passou a fazer sentido. Não é um relatório de progresso nem uma
+lista de tarefas: o que foi feito está no histórico do repositório.
+
+O diário não é avaliado pelo número de problemas registados. Dúvidas em aberto e erros descobertos
+são o que se espera encontrar. O que levanta suspeitas é uma sucessão de semanas sem dificuldades.
+
+As entradas anteriores não se corrigem nem se reescrevem. Se descobrirem que uma estava errada,
+registem-no na entrada da semana em que o descobrirem.
+
+Sempre que recorrerem a ferramentas de IA generativa, registem aqui para quê e o que foi aproveitado.
+
+Formato de cada entrada (acrescentar sempre no fim do ficheiro):
+
+    ## AAAA-MM-DD (semana N)
+    - Dificuldades: ...
+    - Dúvidas em aberto: ...
+    - O que clarificámos: ...   (o que passou a fazer sentido, incluindo o que achávamos e afinal estava errado)
+    - IA: para quê / o que foi aproveitado   (se aplicável)
+
+---
+
+## 2026-10-17 (semana 1)
+- Dificuldades: Decidir o que entra no modelo de domínio e o que fica só nos casos de uso. Tínhamos o "chefe de caixa" como especialização de uma pessoa da loja, mas retirámo-lo porque a transcrição só lhe dá o papel de autorizar anulações. Também não percebemos até onde descrever o fluxo de caixa: se assumimos que o cliente já está no tapete e já esperou na fila, ou se descrevemos essa espera, e nesse caso do ponto de vista do cliente ou do funcionário que sinaliza a caixa livre.
+- Dúvidas em aberto: Podemos ter um ator que não é entidade do modelo de domínio? A "loja" deve ficar no modelo, sendo a única regra que a envolve a de decidir o modo de cada posto polivalente? Quem pode mudar o modo dos postos (self-service/telemóvel), só o chefe de caixa ou também o funcionário? Qual o limite de tempo para pagar com telemóvel, e como fica o stock se a sessão ficar aberta de manhã à noite? Na interação com o funcionário (ex.: remover um artigo), escrevemos "Ator (Funcionário) verifica e remove" ou "Sistema chama o funcionário que verifica e remove"?
+- O que clarificámos: Criámos a entidade "Apoio ao Cliente" para a reclamação e a devolução, que o texto menciona sem dizer quem as trata, com base nas respostas do professor aos colegas no Blackboard. Decidimos tratar a remoção de artigos como condição alternativa no registo de compra, em vez de um caso de uso próprio.
+
+## 2026-10-25 (semana 2)
+- Dificuldades: Saber onde era pertinente usar setas, include e extend no diagrama de use cases. Orientámo-nos ao perguntar, para cada relação, se o caso é condicional e tem objetivo e ator próprios. Ficou o include do pagamento nos três modos de registo e o extend da validação; as outras setas que testámos só acrescentavam ruído. Também não foi óbvio se o chefe de caixas devia ligar aos registos ou ter um use case próprio para a autorização, já que tínhamos decidido que a remoção é fluxo alternativo; ficou por decidir em grupo.
+- Dúvidas em aberto: Se o cartão partilhado em família deve ser tolerado (a compra liga ao cartão e o sistema não verifica quem o usa) e, nesse caso, quem é o "cliente" de uma compra sem cartão, já que o modelo dá dados pessoais ao cliente. Quem valida uma compra por telemóvel, e se a autorização do chefe acima do limite se aplica também ao modo telemóvel, que a transcrição não menciona. Quem altera o modo dos postos polivalentes e o que acontece ao saldo, aos cupões e ao histórico quando se emite uma 2.ª via do cartão. A classe Preço deve guardar histórico, agora que o preço aplicado fica na linha do talão?
+- O que clarificámos: Criámos a Linha do Talão entre a compra e o artigo. O preço que vale é o do momento do registo e não o do pagamento (o cliente que leu os artigos antes de a campanha acabar e pagou depois), por isso o preço aplicado e o instante do registo ficam guardados na compra e não no artigo, e as campanhas por quantidade passam a atuar sobre um conjunto de linhas. Achávamos que bastava ligar a compra ao artigo, mas isso não conseguia representar este caso.
+
+## 2026-11-07 (semanas 3 e 4)
+- Dificuldades: Interpretar o comentário do professor à entrega da análise de requisitos. Algumas críticas percebemos logo (atributos no modelo, misturar "entidade" e "classe") e corrigimo-las no ramo `alteracoes-pos-feedback`, mas outras parecem contrariar o que o próprio professor respondeu no fórum, e não sabemos se as percebemos mal ou se o modelo não mostra bem o que decidimos.
+- Dúvidas em aberto: (1) O professor diz que o `include` é questionável, mas incluímos "Efetuar pagamento" nos três modos porque os meios e as regras de pagamento são os mesmos, e na resposta ao Luís (6.1, 27/10) escreveu que o `include` é possível "só se for de facto o mesmo em todos os que o incluem"; não sabemos se o problema é o pagamento não ser igual nos três modos (na mesma resposta diz que quem interage "pode não ser igual nos três modos") ou ser só um passo do registo, nem se retirar todas as relações foi a resposta certa. (2) Para a autorização de remoção de artigo, o fórum (resposta ao Enrico, 14/10) diz que "na caixa assistida o operador já está presente e é ele que autoriza no momento", o que contradiz a transcrição ("Não é o operador que decide"); não sabemos qual seguir. (3) Achávamos que as compras por telemóvel estavam representadas pela `Leitura com Telemóvel` (D01), mas o professor diz que fazem falta; não sabemos se quer uma entidade própria para a compra por telemóvel. (4) Aplicar as campanhas é responsabilidade do sistema (resposta ao Tomé, 15/10: "saber quais são as campanhas em vigor e aplicá-las"), mas não é um use case; não sabemos onde especificar estas regras de cálculo.
+- O que clarificámos: Percebemos de onde vinha a crítica ao "resultado negativo". Na D24 criámos um `Relatório` de validações com a classe de associação `Resultado Negativo`, mas a transcrição só fala de relatório para as anulações acima do limite (Alberto: "no fim do mês há um relatório disso"); as validações ficam registadas no histórico (Hélder; fórum, resposta à Marta, 19/10: "o sistema tem de a registar"). A própria D24 reconhecia que "a transcrição não descreve este relatório", e "negativo" é um valor do resultado da validação, não uma ligação entre a validação e o relatório. Confundimos os dois relatórios. Também percebemos que "Aplicar Campanhas" não pode ser use case, porque não tem ator: "Um use case corresponde a um objectivo que um actor atinge numa interacção com o sistema" (resposta ao Luís, 6.1).
+
+## 2026-11-15 (semana 5)
+
+- Dificuldades: Interpretar a aparente contradição na restrição de âmbito entre permitir que o cliente registe artigos em falta e impedir o pagamento de uma compra "não admissível". Concluímos que cabe ao funcionário permitir ou não esse registo consoante a discrepância observada. Decidir sobre a modelação do registo do resultado da verificação: criar dois métodos distintos (um para "conforme" e outro para "não admissível") ou apenas um método único que receba/devolva um booleano (`true`/`false`).
+- Dúvidas em aberto: O facto de o sistema apresentar o valor pago é uma responsabilidade da Lógica de Negócio ou pertence apenas à camada de apresentação? A responsabilidade de registar a compra como "conforme" ou "não admissível" pertence ao subsistema de Clientes, de Verificações ou de Compras?
+- O que clarificámos: Com base na restrição de âmbito, juntámos os use cases `efetuarPagamento` e `cobrarCompraPosto` num único use case (`pagarCompra`) na segunda fase, mantendo a coerência e simplificando o modelo. Invertemos a ordem entre a verificação e a aplicação de campanhas. Passámos a aplicar as campanhas apenas após todo o processo de verificação, pois durante a verificação podem ser adicionados novos artigos elegíveis para descontos.
+- IA: Para quê? Converter os ficheiros dos use cases de Markdown para Excel para agilizar a identificação de métodos e subsistemas, e fundir os dois use cases de pagamento no use case `pagarCompra`. O que foi aproveitado? A estrutura tabular gerada para mapear métodos/subsistemas e a base textual unificada do novo use case `pagarCompra` ([link da conversa](https://share.gemini.google/f5GfOkzpfC25)).
+
+## 2026-11-22 (semana 6)
+- Dificuldades: Garantir que todas as operações identificadas nos casos de uso da Fase 2 eram executáveis navegando pelos diagramas de classes de cada subsistema sem quebrar o encapsulamento entre eles. Também tivemos dificuldade em equilibrar a simplicidade pedida pela restrição de âmbito com a extensibilidade exigida na Secção 3 para futuras campanhas e meios de pagamento.
+- Dúvidas em aberto: Sobre o que fizemos nos diagramas de classes, ficámos na dúvida se adicionar métodos auxiliares diretamente nas interfaces dos subsistemas (como `registarDesconto` e `registarPagamento` em `ISubCompras`, que não constavam no Excel) é a melhor opção para manter o encapsulamento, ou se essa coordenação deveria ficar toda na `CheckoutLNFacade` para não alterar as APIs derivadas dos casos de uso. Quanto aos diagramas de sequência, como decidimos quais os métodos que "merecem" o seu próprio diagrama de sequência? Sabemos que devemos começar pelos principais da `ICheckoutLN`, mas existe algum critério objetivo para identificar quais justificam um diagrama próprio e quais dispensam por serem auxiliares ou invocados apenas indiretamente?
+- O que clarificámos: Esclarecemos as dúvidas da semana anterior: apresentar valores ao cliente é responsabilidade exclusiva da camada de apresentação (`UI`), limitando-se a Lógica de Negócio (`SubPagamentos`) a calcular e devolver o montante cobrado/em dívida; e o resultado da verificação (`CONFORME` ou `NAO_ADMISSIVEL`) é registado em `SubVerificações` (associado à compra), enquanto a transição do estado da compra (`desbloquearPagamento` ou `marcarNaoAdmissível`) fica em `SubCompras`, não envolvendo `SubClientes` porque pela compra já se chega ao cartão.

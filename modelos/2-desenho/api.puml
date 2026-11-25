@@ -1,0 +1,64 @@
+@startuml api
+hide circle
+hide empty members
+skinparam classAttributeIconSize 0
+
+
+interface ICheckoutLN <<interface>> {
+    + abrirCompra(codCartao: CodigoCartao): CodigoCompra
+    + adicionarArtigo(codCompra: CodigoCompra, artigo: Artigo): float
+    + terminarCompra(codCompra: CodigoCompra): void
+    + obterCompra(codCompra: CodigoCompra): Compra
+    + contarComprasPagas(codCartao: CodigoCartao): int
+    + calcularValorTotal(codCompra: CodigoCompra): float
+    + concluirCompra(codCompra: CodigoCompra): void
+    + suspenderPagamento(codCompra: CodigoCompra): void
+    + obterArtigosCompra(codCompra: CodigoCompra): List<LinhaCompra>
+    + desbloquearPagamento(codCompra: CodigoCompra): void
+    + marcarNaoAdmissível(codCompra: CodigoCompra): void
+    + lerEtiqueta(codEtiqueta: CodigoEtiqueta): Artigo
+    + debitarSaldo(codCartao: CodigoCartao, valorMáximo: float): float
+    + aplicarCampanhas(codCompra: CodigoCompra): float
+    + decidirVerificação(codCompra: CodigoCompra, nComprasPagas: int): boolean
+    + registarResultadoVerificação(codCompra: CodigoCompra, resultado: ResultadoVerificação): void
+    + pagarComSaldo(codCompra: CodigoCompra): float
+    + pagarComCartaoBancario(codCompra: CodigoCompra): float
+}
+
+interface ISubClientes <<interface>> {
+    + debitarSaldo(codCartao: CodigoCartao, valorMáximo: float): float
+}
+
+interface ISubCompras <<interface>> {
+    + abrirCompra(codCartao: CodigoCartao): CodigoCompra
+    + adicionarArtigo(codCompra: CodigoCompra, artigo: Artigo): float
+    + terminarCompra(codCompra: CodigoCompra): void
+    + obterCompra(codCompra: CodigoCompra): Compra
+    + contarComprasPagas(codCartao: CodigoCartao): int
+    + calcularValorTotal(codCompra: CodigoCompra): float
+    + concluirCompra(codCompra: CodigoCompra): void
+    + suspenderPagamento(codCompra: CodigoCompra): void
+    + obterArtigosCompra(codCompra: CodigoCompra): List<LinhaCompra>
+    + desbloquearPagamento(codCompra: CodigoCompra): void
+    + marcarNaoAdmissível(codCompra: CodigoCompra): void
+}
+
+interface ISubArtigos <<interface>> {
+    + lerEtiqueta(codEtiqueta: CodigoEtiqueta): Artigo
+}
+
+interface ISubCampanhas <<interface>> {
+    + aplicarCampanhas(codCompra: CodigoCompra): float
+}
+
+interface ISubVerificações <<interface>> {
+    + decidirVerificação(codCompra: CodigoCompra, nComprasPagas: int): boolean
+    + registarResultadoVerificação(codCompra: CodigoCompra, resultado: ResultadoVerificação): void
+}
+
+interface ISubPagamentos <<interface>> {
+    + pagarComSaldo(codCompra: CodigoCompra): float
+    + pagarComCartaoBancario(codCompra: CodigoCompra): float
+}
+
+@enduml

@@ -1,0 +1,21 @@
+@startuml ss_clientes
+!include estilo.iuml
+title Subsistema SubClientes
+
+interface ISubClientes <<interface>> {
+  +debitarSaldo(codCartao: CodigoCartao, valorMaximo: float): float
+}
+
+class SubClientesFacade {
+}
+
+class CartaoCliente {
+  -codigo: CodigoCartao
+  -saldo: float
+  +getSaldo(): float
+  +debitar(valorMaximo: float): float
+}
+
+ISubClientes <|.. SubClientesFacade
+SubClientesFacade [codCartao: CodigoCartao] *--> "-cartoes\n0..1" CartaoCliente
+@enduml

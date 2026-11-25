@@ -1,0 +1,46 @@
+@startuml pagarCompra
+title Pagar compra
+
+|Cliente|
+start
+:Indicar no posto a compra terminada que pretende pagar;
+
+|Sistema|
+:Obter a compra e o cartão de cliente associado;
+:Obter o número de compras já pagas pelo cartão neste modo;
+:Decidir, uma única vez, se a compra é verificada;
+
+if (compra selecionada para verificação?) then (sim)
+  :Verificar compra <&fork>;
+  note right
+    Invocação de comportamento (ancinho):
+    executa o diagrama "Verificar compra"
+  end note
+  if (compra admissível?) then (não)
+    :Recusar o pagamento, mantendo o registo da compra;
+    stop
+  else (sim)
+  endif
+else (não)
+endif
+
+:Aplicar as campanhas válidas no instante de registo de cada linha;
+:Calcular e apresentar o total a pagar;
+
+|Cliente|
+:Indicar que pretende pagar a compra;
+
+|Sistema|
+:Aplicar o saldo acumulado no cartão de cliente, até ao valor em dívida;
+:Apresentar o valor restante;
+
+if (falta pagar?) then (sim)
+  |Cliente|
+  :Pagar o valor restante com cartão bancário;
+else (não)
+endif
+
+|Sistema|
+:Concluir a compra;
+stop
+@enduml

@@ -1,0 +1,47 @@
+@startuml verificarCompra
+title Verificar compra
+
+|Cliente|
+|Funcionário|
+|Sistema|
+start
+:Suspender o pagamento da compra;
+:Chamar funcionário; <<output>>
+
+|Funcionário|
+:Chamada para verificação; <<input>>
+
+|Sistema|
+:Apresentar a lista dos artigos registados;
+
+|Funcionário|
+:Comparar o conteúdo dos sacos com a lista de artigos registados;
+
+if (diferença que não se explica?) then (não)
+  if (faltam artigos?) then (sim)
+    repeat
+      |Cliente|
+      :Apresentar o artigo em falta;
+      |Funcionário|
+      :Ler a etiqueta do artigo em falta;
+      |Sistema|
+      :Identificar o artigo e obter o seu preço pela etiqueta;
+      :Adicionar o artigo à compra, com o preço e o instante de registo;
+      |Funcionário|
+    repeat while (mais artigos em falta?) is (sim) not (não)
+  else (não)
+  endif
+  :Indicar que está tudo conforme;
+  |Sistema|
+  :Registar o resultado "conforme";
+  :Desbloquear a compra para pagamento;
+  stop
+else (sim)
+  |Funcionário|
+  :Indicar que a compra não é admissível;
+  |Sistema|
+  :Registar o resultado "não admissível";
+  :Marcar a compra como não admissível, mantendo o registo;
+  stop
+endif
+@enduml

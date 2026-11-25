@@ -1,0 +1,85 @@
+@startuml ss_compras
+!include estilo.iuml
+skinparam linetype ortho
+title Subsistema SubCompras
+
+interface ISubCompras <<interface>> {
+  +abrirCompra(codCartao: CodigoCartao): CodigoCompra
+  +obterCompra(codCompra: CodigoCompra): Compra
+  +adicionarArtigo(codCompra: CodigoCompra, artigo: Artigo): float
+  +terminarCompra(codCompra: CodigoCompra): void
+  +contarComprasPagas(codCartao: CodigoCartao): int
+  +calcularValorTotal(codCompra: CodigoCompra): float
+  +concluirCompra(codCompra: CodigoCompra): void
+  +suspenderPagamento(codCompra: CodigoCompra): void
+  +obterArtigosCompra(codCompra: CodigoCompra): List<LinhaCompra>
+  +desbloquearPagamento(codCompra: CodigoCompra): void
+  +marcarNaoAdmissível(codCompra: CodigoCompra): void
+  +registarDesconto(codCompra: CodigoCompra, desconto: float): void
+  +registarPagamento(codCompra: CodigoCompra, codMeio: String, valor: float): void
+}
+
+class SubComprasFacade {
+}
+
+class Compra {
+  -codigo: CodigoCompra
+  -codCartao: CodigoCartao
+  -desconto: float
+  +getCodigo(): CodigoCompra
+  +getCodCartao(): CodigoCartao
+  +getEstado(): EstadoCompra
+  +getLinhas(): List<LinhaCompra>
+  +getPagamentos(): List<Pagamento>
+  +adicionarLinha(artigo: Artigo): void
+  +valorBruto(): float
+  +aplicarDesconto(desconto: float): void
+  +valorTotal(): float
+  +valorPago(): float
+  +valorEmDivida(): float
+  +terminar(): void
+  +suspenderPagamento(): void
+  +desbloquearPagamento(): void
+  +marcarNaoAdmissível(): void
+  +registarPagamento(codMeio: String, valor: float): void
+  +concluir(): void
+}
+
+enum EstadoCompra <<enumeration>> {
+  EM_REGISTO
+  TERMINADA
+  EM_VERIFICACAO
+  EM_PAGAMENTO
+  PAGA
+  NAO_ADMISSIVEL
+}
+
+class LinhaCompra {
+  -preco: float
+  -instante: LocalDateTime
+  +getArtigo(): Artigo
+  +getPreco(): float
+  +getInstante(): LocalDateTime
+}
+
+class Pagamento {
+  -codMeio: String
+  -valor: float
+  +getCodMeio(): String
+  +getValor(): float
+}
+
+class "SubArtigos::Artigo" as Artigo
+
+ISubCompras <|.. SubComprasFacade
+SubComprasFacade [codCompra: CodigoCompra] *-right-> "-compras\n0..1" Compra
+Compra --> "-estado 1" EstadoCompra
+Compra *--> "-linhas *\n{ordered}" LinhaCompra
+Compra *--> "-pagamentos *\n{ordered}" Pagamento
+LinhaCompra --> "-artigo 1" Artigo
+
+note bottom of LinhaCompra
+  Cada linha guarda o preço no momento do registo
+  (artigo.getPreco()) e o instante atribuído pelo sistema.
+end note
+@enduml
