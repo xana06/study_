@@ -3,7 +3,7 @@
 title Subsistema SubArtigos
 
 interface ISubArtigos <<interface>> {
-  +lerEtiqueta(codEtiqueta: CodigoEtiqueta): Artigo
+  +lerEtiqueta(codEtiqueta: CodigoEtiqueta): Etiqueta
 }
 
 class SubArtigosFacade {
@@ -19,10 +19,8 @@ class Etiqueta {
 class Artigo {
   -codigo: CodigoArtigo
   -designacao: String
-  -preco: float
   +getCodigo(): CodigoArtigo
   +getDesignacao(): String
-  +getPreco(): float
 }
 
 ISubArtigos <|.. SubArtigosFacade

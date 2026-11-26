@@ -1,0 +1,25 @@
+@startuml seq_terminarCompra
+!include estilo-seq.iuml
+mainframe sd CheckoutLNFacade.terminarCompra(codCompra)
+
+actor UI
+participant ": CheckoutLNFacade" as F
+participant "compras : SubComprasFacade" as CO
+participant "c : Compra" as C
+
+UI -> F ++ : terminarCompra(codCompra)
+F -> CO ++ : terminarCompra(codCompra)
+CO -> CO ++ : c = obterCompra(codCompra)
+deactivate CO
+CO -> C ++ : estado = getEstado()
+deactivate C
+break estado != EM_REGISTO
+  CO -->> F : CompraNaoEmRegistoException
+  F -->> UI : CompraNaoEmRegistoException
+end
+CO -> C ++ : terminar()
+deactivate C
+note right of C : estado = TERMINADA
+CO -->> F --
+F -->> UI --
+@enduml

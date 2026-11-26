@@ -6,6 +6,12 @@ start
 :Iniciar a compra ao entrar na loja;
 
 |Sistema|
+:Verificar se o cartão de cliente existe;
+if (cartão existe?) then (não)
+  :Informar que o cartão de cliente não existe;
+  stop
+else (sim)
+endif
 :Abrir compra associada ao cartão de cliente;
 
 |Cliente|

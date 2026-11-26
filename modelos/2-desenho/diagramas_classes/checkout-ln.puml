@@ -10,12 +10,12 @@ interface ICheckoutLN <<interface>> {
   +obterArtigosCompra(codCompra: CodigoCompra): List<LinhaCompra>
   +registarResultadoVerificacao(codCompra: CodigoCompra, resultado: ResultadoVerificacao): void
   +calcularTotalAPagar(codCompra: CodigoCompra): float
-  +pagarComSaldo(codCompra: CodigoCompra): float
-  +pagarComCartaoBancario(codCompra: CodigoCompra): float
+  +pagar(codCompra: CodigoCompra, codMeio: String): float
   +concluirCompra(codCompra: CodigoCompra): void
 }
 
 class CheckoutLNFacade {
+  -decidirSuspensao(c: Compra): boolean
 }
 
 interface ISubCompras <<interface>>
@@ -35,7 +35,7 @@ CheckoutLNFacade *--> "-verificacoes 1" ISubVerificacoes
 
 note right of CheckoutLNFacade
   Coordena os 6 subsistemas sem armazenar estado próprio.
-  Por exemplo: adicionarArtigo obtém Artigo via ISubArtigos.lerEtiqueta e delega em ISubCompras.adicionarArtigo.
+  Por exemplo: adicionarArtigo obtém a Etiqueta via ISubArtigos.lerEtiqueta e delega o artigo e o preço em ISubCompras.adicionarArtigo.
 end note
 @enduml
 

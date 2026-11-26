@@ -1,0 +1,29 @@
+@startuml seq_abrirCompra
+!include estilo-seq.iuml
+mainframe sd CheckoutLNFacade.abrirCompra(codCartao)
+
+actor UI
+participant ": CheckoutLNFacade" as F
+participant "clientes : SubClientesFacade" as CL
+participant "cartoes : Map" as MC
+participant "compras : SubComprasFacade" as CO
+participant "compras : Map" as M
+
+UI -> F ++ : abrirCompra(codCartao)
+F -> CL ++ : existe = existeCartao(codCartao)
+CL -> MC ++ : existe = containsKey(codCartao)
+deactivate MC
+CL -->> F -- : existe
+break !existe
+  F -->> UI : CartaoInexistenteException
+end
+F -> CO ++ : codCompra = abrirCompra(codCartao)
+note right of CO : codCompra = novo código gerado pelo sistema
+create participant "c : Compra" as C
+CO -->> C : <<create>>(codCompra, codCartao)
+note right of C : estado = EM_REGISTO
+CO -> M ++ : put(codCompra, c)
+deactivate M
+CO -->> F -- : codCompra
+F -->> UI -- : codCompra
+@enduml

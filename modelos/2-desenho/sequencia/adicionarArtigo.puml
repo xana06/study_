@@ -1,0 +1,47 @@
+@startuml seq_adicionarArtigo
+!include estilo-seq.iuml
+mainframe sd CheckoutLNFacade.adicionarArtigo(codCompra, codEtiqueta)
+
+actor UI
+participant ": CheckoutLNFacade" as F
+participant "artigos : SubArtigosFacade" as AR
+participant "etiquetas : Map" as ME
+participant "e : Etiqueta" as E
+participant "compras : SubComprasFacade" as CO
+participant "c : Compra" as C
+participant "linhas : List" as L
+
+UI -> F ++ : adicionarArtigo(codCompra, codEtiqueta)
+F -> AR ++ : e = lerEtiqueta(codEtiqueta)
+AR -> ME ++ : e = get(codEtiqueta)
+deactivate ME
+break e == null
+  AR -->> F : EtiquetaDesconhecidaException
+  F -->> UI : EtiquetaDesconhecidaException
+end
+AR -->> F -- : e
+F -> E ++ : artigo = getArtigo()
+deactivate E
+F -> E ++ : preco = getPreco()
+deactivate E
+F -> CO ++ : total = adicionarArtigo(codCompra, artigo, preco)
+CO -> CO ++ : c = obterCompra(codCompra)
+deactivate CO
+CO -> C ++ : estado = getEstado()
+deactivate C
+break estado != EM_REGISTO && estado != EM_VERIFICACAO
+  CO -->> F : CompraNaoAceitaArtigosException
+  F -->> UI : CompraNaoAceitaArtigosException
+end
+CO -> C ++ : adicionarLinha(artigo, preco)
+create participant "l : LinhaCompra" as LC
+C -->> LC : <<create>>(artigo, preco)
+note right of LC : instante = momento atual
+C -> L ++ : add(l)
+deactivate L
+C -->> CO --
+CO -> C ++ : total = valorTotal()
+deactivate C
+CO -->> F -- : total
+F -->> UI -- : total
+@enduml

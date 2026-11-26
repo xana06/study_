@@ -3,6 +3,7 @@
 title Subsistema SubClientes
 
 interface ISubClientes <<interface>> {
+  +existeCartao(codCartao: CodigoCartao): boolean
   +debitarSaldo(codCartao: CodigoCartao, valorMaximo: float): float
 }
 

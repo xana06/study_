@@ -1,0 +1,27 @@
+@startuml seq_concluirCompra
+!include estilo-seq.iuml
+mainframe sd CheckoutLNFacade.concluirCompra(codCompra)
+
+actor UI
+participant ": CheckoutLNFacade" as F
+participant "compras : SubComprasFacade" as CO
+participant "c : Compra" as C
+
+UI -> F ++ : concluirCompra(codCompra)
+F -> CO ++ : concluirCompra(codCompra)
+CO -> CO ++ : c = obterCompra(codCompra)
+deactivate CO
+CO -> C ++ : estado = getEstado()
+deactivate C
+CO -> C ++ : emDivida = valorEmDivida()
+deactivate C
+break estado != EM_PAGAMENTO || emDivida > 0
+  CO -->> F : CompraPorPagarException
+  F -->> UI : CompraPorPagarException
+end
+CO -> C ++ : concluir()
+deactivate C
+note right of C : estado = PAGA
+CO -->> F --
+F -->> UI --
+@enduml

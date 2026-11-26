@@ -3,8 +3,7 @@
 title Subsistema SubPagamentos
 
 interface ISubPagamentos <<interface>> {
-  +pagarComSaldo(codCompra: CodigoCompra): float
-  +pagarComCartaoBancario(codCompra: CodigoCompra): float
+  +pagar(codCompra: CodigoCompra, codMeio: String): float
 }
 
 class SubPagamentosFacade {
@@ -33,4 +32,10 @@ MeioPagamento <|.. MeioSaldo
 MeioPagamento <|.. MeioCartaoBancario
 MeioSaldo --> "-clientes 1" ISubClientes
 MeioPagamento ..> Compra
+
+note right of MeioPagamento
+  Novos meios (dinheiro, cartão de refeição, vale de devolução)
+  implementam MeioPagamento e são registados em meios com o seu codMeio.
+end note
+
 @enduml

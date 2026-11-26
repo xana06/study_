@@ -1,0 +1,37 @@
+@startuml seq_registarResultadoVerificacao
+!include estilo-seq.iuml
+mainframe sd CheckoutLNFacade.registarResultadoVerificacao(codCompra, resultado)
+
+actor UI
+participant ": CheckoutLNFacade" as F
+participant "compras : ISubCompras" as CO
+participant "c : Compra" as C
+participant "verificacoes : SubVerificacoesFacade" as V
+participant "verificacoes : Map" as MV
+participant "v : Verificacao" as VR
+
+UI -> F ++ : registarResultadoVerificacao(codCompra, resultado)
+F -> CO ++ : c = obterCompra(codCompra)
+deactivate CO
+F -> C ++ : estado = getEstado()
+deactivate C
+break estado != EM_VERIFICACAO
+  F -->> UI : CompraNaoEmVerificacaoException
+end
+F -> V ++ : registarResultadoVerificacao(codCompra, resultado)
+V -> MV ++ : v = get(codCompra)
+deactivate MV
+V -> VR ++ : setResultado(resultado)
+deactivate VR
+V -->> F --
+alt resultado == CONFORME
+  F -> CO ++ : desbloquearPagamento(codCompra)
+  deactivate CO
+  note right of CO : estado = EM_PAGAMENTO
+else resultado == NAO_ADMISSIVEL
+  F -> CO ++ : marcarNaoAdmissivel(codCompra)
+  deactivate CO
+  note right of CO : estado = NAO_ADMISSIVEL
+end
+F -->> UI --
+@enduml

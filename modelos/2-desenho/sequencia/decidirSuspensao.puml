@@ -1,0 +1,47 @@
+@startuml seq_decidirSuspensao
+!include estilo-seq.iuml
+mainframe sd CheckoutLNFacade.decidirSuspensao(c)
+
+participant ": CheckoutLNFacade" as F
+participant "c : Compra" as C
+participant "compras : SubComprasFacade" as CO
+participant "compras : Map" as M
+participant "x : Compra" as X
+participant "verificacoes : SubVerificacoesFacade" as V
+participant "Math" as R <<metaclass>>
+participant "verificacoes : Map" as MV
+
+[-> F ++ : decidirSuspensao(c)
+F -> C ++ : codCartao = getCodCartao()
+deactivate C
+F -> C ++ : codCompra = getCodigo()
+deactivate C
+F -> CO ++ : n = contarComprasPagas(codCartao)
+note right of CO : n = 0
+CO -> M ++ : todas = values()
+deactivate M
+loop x : todas
+  CO -> X ++ : cc = getCodCartao()
+  deactivate X
+  CO -> X ++ : estado = getEstado()
+  deactivate X
+  opt cc == codCartao && estado == PAGA
+    note right of CO : n = n + 1
+  end
+end
+CO -->> F -- : n
+F -> V ++ : verificar = decidirVerificacao(codCompra, n)
+V -> V ++ : p = probabilidade(n)
+V -->> V -- : 1 / (n + 1)
+V -> R ++ : sorteio = random()
+deactivate R
+note right of V : verificar = (sorteio < p)
+opt verificar
+  create participant "v : Verificacao" as VR
+  V -->> VR : <<create>>(codCompra)
+  V -> MV ++ : put(codCompra, v)
+  deactivate MV
+end
+V -->> F -- : verificar
+[<<-- F -- : verificar
+@enduml

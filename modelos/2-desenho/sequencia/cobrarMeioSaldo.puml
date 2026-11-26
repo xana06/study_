@@ -1,0 +1,25 @@
+@startuml seq_cobrarMeioSaldo
+!include estilo-seq.iuml
+mainframe sd MeioSaldo.cobrar(c, valor)
+
+participant "m : MeioSaldo" as K
+participant "c : Compra" as C
+participant "clientes : SubClientesFacade" as CL
+participant "cartoes : Map" as MC
+participant "cartao : CartaoCliente" as CC
+
+[-> K ++ : cobrado = cobrar(c, valor)
+K -> C ++ : codCartao = getCodCartao()
+deactivate C
+K -> CL ++ : debitado = debitarSaldo(codCartao, valor)
+CL -> MC ++ : cartao = get(codCartao)
+deactivate MC
+CL -> CC ++ : debitado = debitar(valor)
+deactivate CC
+note right of CC
+  debitado = mínimo(saldo, valor)
+  saldo = saldo - debitado
+end note
+CL -->> K -- : debitado
+[<<-- K -- : debitado
+@enduml

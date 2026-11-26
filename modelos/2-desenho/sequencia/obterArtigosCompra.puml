@@ -1,0 +1,18 @@
+@startuml seq_obterArtigosCompra
+!include estilo-seq.iuml
+mainframe sd CheckoutLNFacade.obterArtigosCompra(codCompra)
+
+actor UI
+participant ": CheckoutLNFacade" as F
+participant "compras : SubComprasFacade" as CO
+participant "c : Compra" as C
+
+UI -> F ++ : obterArtigosCompra(codCompra)
+F -> CO ++ : linhas = obterArtigosCompra(codCompra)
+CO -> CO ++ : c = obterCompra(codCompra)
+deactivate CO
+CO -> C ++ : linhas = getLinhas()
+deactivate C
+CO -->> F -- : linhas
+F -->> UI -- : linhas
+@enduml

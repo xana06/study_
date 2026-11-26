@@ -1,0 +1,43 @@
+@startuml seq_pagar
+!include estilo-seq.iuml
+mainframe sd CheckoutLNFacade.pagar(codCompra, codMeio)
+
+actor UI
+participant ": CheckoutLNFacade" as F
+participant "pagamentos : SubPagamentosFacade" as P
+participant "compras : ISubCompras" as CO
+participant "c : Compra" as C
+participant "meios : Map" as M
+participant "m : MeioPagamento" as K
+
+UI -> F ++ : pagar(codCompra, codMeio)
+F -> P ++ : emDivida = pagar(codCompra, codMeio)
+P -> CO ++ : c = obterCompra(codCompra)
+deactivate CO
+P -> C ++ : estado = getEstado()
+deactivate C
+break estado != EM_PAGAMENTO
+  P -->> F : PagamentoNaoPermitidoException
+  F -->> UI : PagamentoNaoPermitidoException
+end
+P -> M ++ : m = get(codMeio)
+deactivate M
+break m == null
+  P -->> F : MeioPagamentoDesconhecidoException
+  F -->> UI : MeioPagamentoDesconhecidoException
+end
+P -> C ++ : valor = valorEmDivida()
+deactivate C
+P -> K ++ : cobrado = cobrar(c, valor)
+ref over K
+  MeioSaldo.cobrar(c, valor)
+  MeioCartaoBancario.cobrar(c, valor)
+end ref
+K -->> P -- : cobrado
+P -> CO ++ : registarPagamento(codCompra, codMeio, cobrado)
+deactivate CO
+P -> C ++ : emDivida = valorEmDivida()
+deactivate C
+P -->> F -- : emDivida
+F -->> UI -- : emDivida
+@enduml

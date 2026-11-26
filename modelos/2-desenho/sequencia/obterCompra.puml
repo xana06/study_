@@ -1,0 +1,16 @@
+@startuml seq_obterCompra
+!include estilo-seq.iuml
+mainframe sd SubComprasFacade.obterCompra(codCompra)
+
+participant "compras : SubComprasFacade" as CO
+participant "compras : Map" as M
+
+[-> CO ++ : obterCompra(codCompra)
+CO -> M ++ : c = get(codCompra)
+deactivate M
+break c == null
+  [<<-- CO : CompraInexistenteException
+  note right of CO : a exceção propaga-se até à UI
+end
+[<<-- CO -- : c
+@enduml

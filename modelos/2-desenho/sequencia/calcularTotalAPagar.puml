@@ -1,0 +1,31 @@
+@startuml seq_calcularTotalAPagar
+!include estilo-seq.iuml
+mainframe sd CheckoutLNFacade.calcularTotalAPagar(codCompra)
+
+actor UI
+participant ": CheckoutLNFacade" as F
+participant "campanhas : SubCampanhasFacade" as CA
+participant "compras : ISubCompras" as CO
+participant "campanhas : Map" as M
+participant "camp : Campanha" as K
+
+UI -> F ++ : calcularTotalAPagar(codCompra)
+F -> CA ++ : desconto = aplicarCampanhas(codCompra)
+CA -> CO ++ : c = obterCompra(codCompra)
+deactivate CO
+note right of CA : desconto = 0
+CA -> M ++ : todas = values()
+deactivate M
+loop camp : todas
+  CA -> K ++ : d = desconto(c)
+  ref over K : CampanhaLeve2Pague1.desconto(c)
+  K -->> CA -- : d
+  note right of CA : desconto = desconto + d
+end
+CA -> CO ++ : registarDesconto(codCompra, desconto)
+deactivate CO
+CA -->> F -- : desconto
+F -> CO ++ : total = calcularValorTotal(codCompra)
+deactivate CO
+F -->> UI -- : total
+@enduml

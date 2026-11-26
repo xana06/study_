@@ -1,0 +1,31 @@
+@startuml seq_iniciarPagamento
+!include estilo-seq.iuml
+mainframe sd CheckoutLNFacade.iniciarPagamento(codCompra)
+
+actor UI
+participant ": CheckoutLNFacade" as F
+participant "compras : ISubCompras" as CO
+participant "c : Compra" as C
+
+UI -> F ++ : iniciarPagamento(codCompra)
+F -> CO ++ : c = obterCompra(codCompra)
+deactivate CO
+F -> C ++ : estado = getEstado()
+deactivate C
+break estado != TERMINADA
+  F -->> UI : PagamentoNaoPermitidoException
+end
+F -> F ++ : suspensa = decidirSuspensao(c)
+ref over F : CheckoutLNFacade.decidirSuspensao(c)
+F -->> F -- : suspensa
+alt suspensa
+  F -> CO ++ : suspenderPagamento(codCompra)
+  deactivate CO
+  note right of CO : estado = EM_VERIFICACAO
+else else
+  F -> CO ++ : desbloquearPagamento(codCompra)
+  deactivate CO
+  note right of CO : estado = EM_PAGAMENTO
+end
+F -->> UI -- : suspensa
+@enduml

@@ -1,0 +1,5 @@
+' Estilo comum aos diagramas de sequência
+hide footbox
+skinparam sequenceMessageAlign center
+skinparam shadowing false
+skinparam sequenceReferenceBackgroundColor white

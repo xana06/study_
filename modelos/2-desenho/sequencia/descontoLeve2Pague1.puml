@@ -1,0 +1,43 @@
+@startuml seq_descontoLeve2Pague1
+!include estilo-seq.iuml
+mainframe sd CampanhaLeve2Pague1.desconto(c)
+
+participant "camp : CampanhaLeve2Pague1" as K
+participant "c : Compra" as C
+participant "l : LinhaCompra" as L
+participant "a : Artigo" as A
+participant "precos : List" as P
+
+[-> K ++ : desconto(c)
+K -> C ++ : linhas = getLinhas()
+deactivate C
+create P
+K -->> P : <<create>>
+loop l : linhas
+  K -> L ++ : a = getArtigo()
+  deactivate L
+  K -> A ++ : cod = getCodigo()
+  deactivate A
+  K -> L ++ : t = getInstante()
+  deactivate L
+  K -> K ++ : vigor = emVigor(t)
+  deactivate K
+  opt cod == codArtigo && vigor
+    K -> L ++ : preco = getPreco()
+    deactivate L
+    K -> P ++ : add(preco)
+    deactivate P
+  end
+end
+K -> P ++ : sort()
+deactivate P
+K -> P ++ : n = size()
+deactivate P
+note right of K : d = 0
+loop i : 0 .. (n div 2) - 1
+  K -> P ++ : preco = get(i)
+  deactivate P
+  note right of K : d = d + preco
+end
+[<<-- K -- : d
+@enduml

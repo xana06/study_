@@ -17,7 +17,7 @@ component CheckoutLN as cLN {
         portin " " as pCam
     }
 
-    component "SubVerificações" as c4 <<subsystem>> {
+    component "SubVerificacoes" as c4 <<subsystem>> {
         portin " " as pVer
     }
 

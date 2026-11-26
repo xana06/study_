@@ -6,7 +6,7 @@ title Subsistema SubCompras
 interface ISubCompras <<interface>> {
   +abrirCompra(codCartao: CodigoCartao): CodigoCompra
   +obterCompra(codCompra: CodigoCompra): Compra
-  +adicionarArtigo(codCompra: CodigoCompra, artigo: Artigo): float
+  +adicionarArtigo(codCompra: CodigoCompra, artigo: Artigo, preco: float): float
   +terminarCompra(codCompra: CodigoCompra): void
   +contarComprasPagas(codCartao: CodigoCartao): int
   +calcularValorTotal(codCompra: CodigoCompra): float
@@ -14,7 +14,7 @@ interface ISubCompras <<interface>> {
   +suspenderPagamento(codCompra: CodigoCompra): void
   +obterArtigosCompra(codCompra: CodigoCompra): List<LinhaCompra>
   +desbloquearPagamento(codCompra: CodigoCompra): void
-  +marcarNaoAdmissível(codCompra: CodigoCompra): void
+  +marcarNaoAdmissivel(codCompra: CodigoCompra): void
   +registarDesconto(codCompra: CodigoCompra, desconto: float): void
   +registarPagamento(codCompra: CodigoCompra, codMeio: String, valor: float): void
 }
@@ -31,7 +31,7 @@ class Compra {
   +getEstado(): EstadoCompra
   +getLinhas(): List<LinhaCompra>
   +getPagamentos(): List<Pagamento>
-  +adicionarLinha(artigo: Artigo): void
+  +adicionarLinha(artigo: Artigo, preco: float): void
   +valorBruto(): float
   +aplicarDesconto(desconto: float): void
   +valorTotal(): float
@@ -40,7 +40,7 @@ class Compra {
   +terminar(): void
   +suspenderPagamento(): void
   +desbloquearPagamento(): void
-  +marcarNaoAdmissível(): void
+  +marcarNaoAdmissivel(): void
   +registarPagamento(codMeio: String, valor: float): void
   +concluir(): void
 }
@@ -80,6 +80,6 @@ LinhaCompra --> "-artigo 1" Artigo
 
 note bottom of LinhaCompra
   Cada linha guarda o preço no momento do registo
-  (artigo.getPreco()) e o instante atribuído pelo sistema.
+  (o da etiqueta lida) e o instante atribuído pelo sistema.
 end note
 @enduml
