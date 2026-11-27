@@ -2,55 +2,67 @@
 
 interface ICheckoutLN
 
-component CheckoutLN as cLN {
-    portin " " as pLN
+package "Camada de Apresentação" {
+    component "UI" as ui
+}
 
-    component "SubClientes" as c1 <<subsystem>> {
-        portin " " as pCli
+package "Camada de Lógica de Negócio" {
+
+    component CheckoutLN as cLN {
+        portin " " as pLN
+
+        component "SubClientes" as c1 <<subsystem>> {
+            portin " " as pCli
+        }
+
+        component "SubCompras" as c2 <<subsystem>> {
+            portin " " as pCom
+        }
+
+        component "SubCampanhas" as c3 <<subsystem>> {
+            portin " " as pCam
+        }
+
+        component "SubVerificacoes" as c4 <<subsystem>> {
+            portin " " as pVer
+        }
+
+        component "SubPagamentos" as c5 <<subsystem>> {
+            portin " " as pPag
+        }
+
+        component "SubArtigos" as c6 <<subsystem>> {
+            portin " " as pArt
+        }
+
+        interface ISubClientes
+        interface ISubCompras
+        interface ISubCampanhas
+        interface ISubVerificacoes
+        interface ISubPagamentos
+        interface ISubArtigos
+
+        ISubClientes -- pCli
+        ISubCompras -- pCom
+        ISubCampanhas -- pCam
+        ISubVerificacoes -- pVer
+        ISubPagamentos -- pPag
+        ISubArtigos -- pArt
+
+        pLN --( ISubClientes
+        pLN --( ISubCompras
+        pLN --( ISubCampanhas
+        pLN --( ISubVerificacoes
+        pLN --( ISubPagamentos
+        pLN --( ISubArtigos
+
+        c3 ..> ISubCompras : requer
+        c5 ..> ISubCompras : requer
+        c5 ..> ISubClientes : requer
     }
-
-    component "SubCompras" as c2 <<subsystem>> {
-        portin " " as pCom
-    }
-
-    component "SubCampanhas" as c3 <<subsystem>> {
-        portin " " as pCam
-    }
-
-    component "SubVerificacoes" as c4 <<subsystem>> {
-        portin " " as pVer
-    }
-
-    component "SubPagamentos" as c5 <<subsystem>> {
-        portin " " as pPag
-    }
-
-    component "SubArtigos" as c6 <<subsystem>> {
-        portin " " as pArt
-    }
-
-    interface ISubClientes
-    interface ISubCompras
-    interface ISubCampanhas
-    interface ISubVerificacoes
-    interface ISubPagamentos
-    interface ISubArtigos
-
-    ISubClientes -- pCli
-    ISubCompras -- pCom
-    ISubCampanhas -- pCam
-    ISubVerificacoes -- pVer
-    ISubPagamentos -- pPag
-    ISubArtigos -- pArt
-
-    pLN --( ISubClientes
-    pLN --( ISubCompras
-    pLN --( ISubCampanhas
-    pLN --( ISubVerificacoes
-    pLN --( ISubPagamentos
-    pLN --( ISubArtigos
 }
 
 ICheckoutLN -- pLN
+ui ..> ICheckoutLN : invoca
 
 @enduml
