@@ -212,7 +212,7 @@ e indiquem o que mudou e porquê.
 
 ### D28: Use cases da fase de desenho 
 - Tipo: Decisão
-- Questão: os use cases da fase de desenho foram trabalhados no Excel `useCasesFase2.xlsx`, que não está no repositório; os diagramas referidos nas decisões D26 e D27 não têm, no repositório, as especificações de que partem.
+- Questão: os use cases da fase de desenho foram trabalhados no Excel `usecases-fase2.xlsx`, que não está no repositório; os diagramas referidos nas decisões D26 e D27 não têm, no repositório, as especificações de que partem.
 - Decisão: manter as especificações simplificadas ("Registar artigo", "Pagar compra" e "Verificar compra") em `modelos/2-desenho/usecases-fase2.xlsx`, no repositório. Revisão: a passagem para Markdown em `modelos/2-desenho/usecases/` não existe no repositório; o Excel está lá e é dele que partem a API e os diagramas.
 - Justificação: os diagramas de desenho têm de poder ser lidos a partir das especificações que lhes dão origem, e o Excel tem, passo a passo, as responsabilidades, métodos e subsistemas. As simplificações seguem a restrição de âmbito (§2): só estas três funcionalidades.
 - Depende no modelo: `modelos/2-desenho/usecases-fase2.xlsx`; `modelos/2-desenho/api.puml`; diagramas de sequência da fase 2.
@@ -228,7 +228,7 @@ e indiquem o que mudou e porquê.
 - Tipo: Decisão
 - Questão: como agrupar as operações da API em subsistemas coesos e representar a arquitetura de componentes e dependências da lógica de negócio.
 - Decisão: representar em `modelos/2-desenho/diagrama_componentes.puml` o `CheckoutLN` e os 6 subsistemas internos (`SubCompras`, `SubArtigos`, `SubClientes`, `SubCampanhas`, `SubPagamentos` e `SubVerificacoes`) com `<<subsystem>>`, portas e interfaces fornecidas (*lollipop*) e requeridas (*socket*). `SubCampanhas` e `SubPagamentos` dependem de `ISubCompras` (para ler linhas/totais e registar descontos/pagamentos), e `SubPagamentos` depende de `ISubClientes` (para debitar saldo), sem ciclos de dependência. O diagrama explicita a Camada de Apresentação (`UI`) e a Camada de Lógica de Negócio (`CheckoutLN` e os subsistemas), ligadas por `ICheckoutLN`.
-- Justificação: aplica os princípios SRP/SoC (cada subsistema isola uma responsabilidade de negócio) e DIP/encapsulamento (nenhum subsistema acede diretamente às classes internas de outro, dependendo apenas da sua interface), mantendo cada módulo substituível.
+- Justificação: aplica os princípios SRP/SoC (cada subsistema isola uma responsabilidade de negócio) e DIP/encapsulamento (nenhum subsistema acede diretamente às classes internas de outro, dependendo apenas da sua interface), mantendo cada módulo substituível. A separação entre `UI` e `CheckoutLN` explicita a arquitetura multi-camada requerida pela §5; a ligação por `ICheckoutLN` baseia-se na interface global invocada pela UI (D29).
 - Depende no modelo: `modelos/2-desenho/diagrama_componentes.puml`; `modelos/2-desenho/api.puml`; `modelos/2-desenho/diagramas_classes/*.puml`.
 
 ### D31: Diagramas de atividade dos use cases da fase de desenho
